@@ -1,11 +1,21 @@
 import pandas as pd
 import google.generativeai as genai
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Đọc dữ liệu từ file CSV
 file_input = './data/working_data.csv'  # Đường dẫn đến file CSV của bạn
 file_output = './data/output_data.csv'
 
-genai.configure(api_key="AIzaSyDPtwg1S_3nnH8zwOGjMrN-dagulLQH-0Q")
+# Configure API key from environment variable
+api_key = os.getenv("GEMINI_API_KEY")
+if not api_key:
+    raise ValueError("GEMINI_API_KEY not found in environment variables. Please check your .env file.")
+
+genai.configure(api_key=api_key)
 
 # Chọn model Gemini 2.0 Flash
 model = genai.GenerativeModel('gemini-2.0-flash')
