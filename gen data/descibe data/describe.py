@@ -63,7 +63,7 @@ def build_prompt_for_description(prefix: str, items: List[Dict], length_mode: st
     length_note = {
         "short": "- Ưu tiên diễn đạt ngắn gọn, súc tích nhất có thể (1–2 câu), vẫn giữ đủ ý phân biệt.",
         "medium": "- Mô tả rõ ràng, tự nhiên, từ 2–3 câu, đủ để phân biệt giữa các mã.",
-        "verbose": "- Diễn đạt chi tiết hơn nếu cần thiết, đặc biệt khi các mã dễ gây nhầm lẫn."
+        "verbose": "- Diễn đạt chi tiết hơn khi cần thiết, đặc biệt khi các mã dễ gây nhầm lẫn."
     }.get(length_mode, "")
 
     # Dữ liệu đầu vào định dạng liệt kê
