@@ -50,12 +50,6 @@ class SimpleHSCodeItem(BaseModel):
 class SimpleHSCodeGroup(BaseModel):
     items: List[SimpleHSCodeItem]
 
-from typing import List, Dict
-
-from typing import List, Dict
-
-from typing import List, Dict
-
 def build_prompt_for_description(prefix: str, items: List[Dict], length_mode: str = "medium") -> str:
     """Sinh prompt mô tả mã HS, có kiểm soát độ dài và hướng dẫn nội dòng"""
     
