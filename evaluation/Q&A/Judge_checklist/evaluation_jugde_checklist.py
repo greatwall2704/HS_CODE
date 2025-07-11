@@ -47,6 +47,8 @@ class Evaluation(BaseModel):
     ngon_ngu_tu_nhien: bool  # Diễn đạt tự nhiên, không hành chính/máy móc
     dinh_dang_ro_rang: bool  # Trình bày rõ ràng, đúng cấu trúc
     khong_loi_logic: bool  # Không có lỗi logic, ngữ pháp hoặc mâu thuẫn
+    giai_thich_loi: str = None  # Giải thích lý do nếu bất kỳ tiêu chí nào là false
+    goi_y_sua: str = None  # Gợi ý sửa nếu mô tả chưa đạt yêu cầu
 
 class EvaluationGroup(BaseModel):
     items: List[Evaluation]
@@ -80,13 +82,19 @@ def build_prompt_for_evaluation(prefix: str, items: List[Dict]) -> str:
 ## Checklist (`true` nếu chắc chắn, `false` nếu không):
 1. `giu_dung_noi_dung`: Giữ đúng nội dung gốc.
 2. `dung_chuyen_nganh`: Đúng lĩnh vực, loại hàng.
-3. `phan_biet_ma_hs`: Khác biệt với mã khác trong nhóm.
-4. `ngon_ngu_tu_nhien`: Diễn đạt dễ hiểu, không hành chính hóa.
+3. `phan_biet_ma_hs`: Có khả năng phân biệt tốt với mã khác trong nhóm.
+4. `ngon_ngu_tu_nhien`: Diễn đạt dễ hiểu với người dùng.
 5. `dinh_dang_ro_rang`: Cấu trúc trình bày rõ ràng.
 6. `khong_loi_logic`: Không mâu thuẫn, sai ngữ pháp.
 
 ---
 
+## 🛠 Nếu bất kỳ tiêu chí nào bị đánh giá là `false`:
+- Hãy thêm 2 trường sau:
+  - `giai_thich_loi`: Giải thích lý do vì sao mô tả chưa đạt yêu cầu.
+  - `goi_y_sua`: Đề xuất cách sửa lại mô tả để đáp ứng yêu cầu.
+
+---
 ## Ví dụ:
 
 ### Tốt:
@@ -103,6 +111,8 @@ def build_prompt_for_evaluation(prefix: str, items: List[Dict]) -> str:
   "ngon_ngu_tu_nhien": true,
   "dinh_dang_ro_rang": true,
   "khong_loi_logic": true,
+  "giai_thich_loi": null,
+  "goi_y_sua": null
 }}
 ```
 
@@ -120,6 +130,8 @@ def build_prompt_for_evaluation(prefix: str, items: List[Dict]) -> str:
   "ngon_ngu_tu_nhien": true,
   "dinh_dang_ro_rang": true,
   "khong_loi_logic": false,
+  "giai_thich_loi": "Mô tả mới đã thêm thông tin 'cao sản nhập khẩu từ Châu Âu' mà không có trong mô tả gốc.",
+  "goi_y_sua": "Chỉ nêu rõ 'Dê loại khác', không đề cập xuất xứ hoặc chất lượng không có trong bản gốc."
 }}
 ```
 
@@ -138,17 +150,20 @@ def build_prompt_for_evaluation(prefix: str, items: List[Dict]) -> str:
       "ngon_ngu_tu_nhien": true,
       "dinh_dang_ro_rang": true,
       "khong_loi_logic": true,
+      "giai_thich_loi": null,
+      "goi_y_sua": null
     }},
     ...
   ]
 }}
 ```
-*** Chú ý: Các ví dụ trên chỉ mang tính chất minh họa, mang tính tham khảo văn phong và cách trình bày. Bạn cần đánh giá dựa trên mô tả thực tế trong dữ liệu.
+*** Chú ý: Các ví dụ trên chỉ mang tính chất minh họa, mang tính tham khảo văn phong và cách trình bày. Bạn cần đánh giá dựa trên mô tả thực tế trong dữ liệu bạn đang xử lý.
 
 ## Lưu ý quan trọng (Guidelines for Objective Evaluation):
 
 - Chỉ chọn `true` nếu bạn hoàn toàn chắc chắn tiêu chí được đáp ứng.
 - Nếu có nghi ngờ, mô tả không rõ hoặc không đủ cơ sở → chọn `false`.
+- Với bất kỳ tiêu chí nào bị false, luôn bổ sung giai_thich_loi và goi_y_sua.
 - Không đánh giá theo cảm tính hoặc dựa vào ví dụ trước. Mỗi mô tả phải được đánh giá độc lập.
 - Không thêm nhận xét, mở rộng hoặc viết lại mô tả. Chỉ trả về JSON đúng định dạng.
 - Duy trì tư duy khách quan, trung lập, với vai trò của một chuyên gia hiểu ngôn ngữ và ngữ nghĩa trong phân loại HS.
@@ -158,7 +173,7 @@ def build_prompt_for_evaluation(prefix: str, items: List[Dict]) -> str:
 
 
 
-async def fetch_and_save_hscode_evaluation(grouped_data: dict, output_file="data/evaluation_output.csv", model="gemini-2.0-flash-001"):
+async def fetch_and_save_hscode_evaluation(grouped_data: dict, output_file, model):
     """Fetch evaluation results from LLM and save to CSV"""
     all_rows = []  # All evaluations across groups
     client = genai.Client(api_key=api_key)
@@ -197,7 +212,7 @@ async def fetch_and_save_hscode_evaluation(grouped_data: dict, output_file="data
 async def main():
     print("🚀 Bắt đầu đánh giá mô tả mã HS...")
     data_path = "data/description data/mota_motamoi.csv"
-    output_path = "evaluation/LLM-as-a-Judge/results/evaluation_results.csv"
+    output_path = "evaluation/Judge_checklist/results/description/evaluation_results.csv"
     model = "gemini-2.5-pro"
 
     print("📊 Đang tải dữ liệu từ:", data_path)
