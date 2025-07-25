@@ -1,0 +1,60 @@
+# Training Configuration
+model:
+  name: "VietAI/vit5-base"
+  max_input_length: 512
+  max_target_length: 256
+
+# Data Configuration
+data:
+  train_file: "data/train.jsonl"
+  val_file: "data/val.jsonl"
+  test_file: "data/test.jsonl"
+  input_column: "prompt"
+  target_column: "response"
+
+# Training Configuration
+training:
+  output_dir: "checkpoints/"
+  num_train_epochs: 5
+  per_device_train_batch_size: 8
+  per_device_eval_batch_size: 8
+  gradient_accumulation_steps: 2
+  learning_rate: 5e-5
+  weight_decay: 0.01
+  warmup_steps: 500
+  logging_steps: 100
+  eval_steps: 500
+  save_steps: 500
+  save_total_limit: 3
+  evaluation_strategy: "steps"
+  save_strategy: "steps"
+  load_best_model_at_end: true
+  metric_for_best_model: "eval_loss"
+  greater_is_better: false
+  remove_unused_columns: false
+  dataloader_pin_memory: false
+
+# Generation Configuration
+generation:
+  max_length: 256
+  min_length: 10
+  do_sample: true
+  temperature: 0.7
+  top_k: 50
+  top_p: 0.95
+  repetition_penalty: 1.2
+  length_penalty: 1.0
+  no_repeat_ngram_size: 3
+
+# Logging Configuration
+logging:
+  use_wandb: false
+  use_tensorboard: true
+  project_name: "vit5-chatbot"
+  run_name: "vit5-base-finetune"
+
+# Hardware Configuration
+hardware:
+  fp16: true
+  dataloader_num_workers: 4
+  use_cpu: false

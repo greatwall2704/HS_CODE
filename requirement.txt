@@ -1,5 +1,0 @@
-pandas
-tqdm
-python-dotenv
-google-generativeai
-pydantic

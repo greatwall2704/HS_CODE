@@ -1,18 +1,50 @@
+# ======================
+# PYTHON
+# ======================
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyc
+*.pyo
+*.pyd
+.Python
 
 # C extensions
 *.so
 
-# Jupyter Notebook checkpoints
+# Virtual environment
+venv/
+.venv/
+env/
+ENV/
+.env
+
+# ======================
+# JUPYTER NOTEBOOK
+# ======================
 .ipynb_checkpoints/
 
-# Data files
-!"data/description data/data_with_new_mota.csv"
-!data/description data/data_with_new_mota.csv
+# ======================
+# MACHINE LEARNING & DATA
+# ======================
+# Model checkpoints và artifacts (rất lớn)
+*/checkpoints/
+*/results/
+*/models/
+*/saved_models/
+checkpoints/
+results/
+models/
+saved_models/
+
+# Weights & Biases logs
+wandb/
+*/wandb/
+
+# Dataset files (giữ lại một số file quan trọng)
 *.csv
+*.json
 *.tsv
 *.xls
 *.xlsx
@@ -24,57 +56,59 @@ __pycache__/
 *.pkl
 *.joblib
 
-# VS Code settings
-.vscode/
+# Giữ lại một số file cấu hình và dữ liệu nhỏ quan trọng
+!**/configs/*.yaml
+!**/configs/*.json
+!data/mahs_hierarchy_full.json
+!data/description\ data/data_with_new_mota.csv
 
-# Environment files
-.env
-.venv/
-venv/
-ENV/
-
-# MacOS
-.DS_Store
-
-# System files
-Thumbs.db
-
-# Logs
-*.log
-
-# Others
-*.bak
-*.swp
-*.tmp
-
-# Environment variables
-.env
-
-# Python cache
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-
-# Virtual environment
-venv/
-env/
-ENV/
-
-# IDE
+# ======================
+# IDE & EDITORS
+# ======================
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 
-# OS generated files
+# ======================
+# OPERATING SYSTEM
+# ======================
+# macOS
 .DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
-ehthumbs.db
-Thumbs.db
 
-# Data files (nếu không muốn upload dữ liệu)
-# *.csv
-# data/
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# ======================
+# LOGS & TEMPORARY FILES
+# ======================
+*.log
+*.tmp
+*.bak
+
+# ======================
+# LARGE TRAINING DATA
+# ======================
+# Training logs và histories
+log_history.json
+*/log_history.json
+
+# Large data directories
+data/QA\ data/
+data/original\ data/
+data/working_data.csv
+data/total_data.csv
+
+# Generated data
+gen\ data/*/
+evaluation/*/

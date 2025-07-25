@@ -158,9 +158,9 @@ async def fetch_and_save_hscode_csv(grouped_data, output_file="data/description 
     all_rows = []  # Contains all data rows from all prefixes
     client = genai.Client(api_key=api_key)
 
-    for prefix, items in grouped_data.items():
+    for prefix, items in tqdm(grouped_data.items(), desc="Processing HS Prefixes"):
         prompt = build_prompt_for_description(prefix, items)
-        
+
         response = client.models.generate_content(
             model=model,
             contents=prompt,
@@ -195,10 +195,10 @@ async def main():
     print("🚀 Starting HS Code description generation...")
     
     # Load and prepare data
-    data_path = "data/original data/df.csv"
+    data_path = "data/original data/hs_code.csv"
     nrows = 19  # Adjust as needed, or set to None to load all data
     print("📊 Loading data...")
-    data = load_data(data_path, nrows=nrows)
+    data = load_data(data_path)
     print(f"Loaded {len(data)} records")
     print(data.head())
     
@@ -211,7 +211,7 @@ async def main():
     
     # Generate descriptions and save to CSV
     print("🤖 Generating new descriptions...")
-    output_path = "data/description data/data_with_new_mota.csv"
+    output_path = "data/description data/description_data.csv"
     model = "gemini-2.0-flash-001"
     
     result = await fetch_and_save_hscode_csv(grouped_data, output_path, model)

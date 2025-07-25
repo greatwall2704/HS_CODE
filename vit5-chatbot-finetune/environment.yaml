@@ -1,0 +1,22 @@
+name: vit5-chatbot
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.9.23
+  - pip
+  - pytorch
+  - torchvision
+  - torchaudio
+  - cudatoolkit=11.3
+  - pip:
+      - transformers>=4.36.0
+      - datasets
+      - tqdm
+      - scikit-learn
+      - pandas
+      - matplotlib
+      - sentencepiece
+      - accelerate
+      - protobuf
+      - ipykernel
